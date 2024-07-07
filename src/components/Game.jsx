@@ -5,7 +5,7 @@ import endpoint from "/endpoint"
 
 export default function Game() {
 	const [questions, setQuestions] = useState([])
-	const [gameState, setGameState] = useState("playing")
+	const [isPlaying, setIsPlaying] = useState(true)
 
 	function parseData(data) {
 		return data.results.map(q => {
@@ -23,7 +23,7 @@ export default function Game() {
 		})
 	}
 
-	const getQuestions = useCallback(async() => {
+	const fetchQuestions = useCallback(async () => {
 		const res = await fetch(endpoint)
 
 		if (!res.ok) {
@@ -40,22 +40,19 @@ export default function Game() {
 		}
 	}, [])
 
+	const startGame = useCallback(() => {
+		fetchQuestions()
+		setIsPlaying(true)
+	}, [fetchQuestions])
+
 	useEffect(() => {
-		getQuestions()
-	}, [getQuestions])
+		startGame()
+	}, [startGame])
 
 	function updateSelectedAnswer(questionIndex, answerIndex) {
 		const prevQuestions = [...questions]
 		prevQuestions[questionIndex].selectedAnswerIndex = answerIndex
 		setQuestions(prevQuestions)
-	}
-
-	function checkAnswers() {
-		if (questions.every(q => q.selectedAnswerIndex === q.correctAnswerIndex)) {
-			setGameState("win")
-		} else {
-			setGameState("loss")
-		}
 	}
 
 	const questionComponents = questions.map((item, index) =>
@@ -69,14 +66,16 @@ export default function Game() {
 	)
 
 	const areAllAnswered = questions.every(q => q.selectedAnswerIndex !== null)
+	const nCorrect = questions.filter(q => q.selectedAnswerIndex === q.correctAnswerIndex).length
 
-	return (
+	return (	
 		<div>
 			{questionComponents}
-			<button onClick={checkAnswers} disabled={!areAllAnswered}>Check answers</button>
-			{gameState === "win" && <p>You won</p>}
-			{gameState === "loss" && <p>You lost</p>}
-			{gameState !== "playing" && <button onClick={getQuestions}>Play again</button>}
+			<button onClick={() => setIsPlaying(false)} disabled={!areAllAnswered}>Check answers</button>
+			{!isPlaying && <div>
+				<p>You scored {nCorrect}/{questions.length} correct answers</p>
+				<button onClick={startGame}>Play again</button>
+			</div>}
 		</div>
 	)
 }
