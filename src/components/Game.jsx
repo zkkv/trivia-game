@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react"
+import Question from "./Question"
 import endpoint from "/endpoint"
 
 export default function Game() {
-	const [questions, setQuestions] = useState({})
+	const [questions, setQuestions] = useState([])
 
 	function parseData(data) {
 		return data.results.map(q => {
@@ -14,9 +15,16 @@ export default function Game() {
 				category: q.category,
 				question: q.question,
 				answers: answers,
-				correctAnswerIndex: randomIndex
+				correctAnswerIndex: randomIndex,
+				selectedAnswer: null
 			}
 		})
+	}
+
+	function updateSelectedAnswer(questionIndex, answerIndex) {
+		const prevQuestions = [...questions]
+		prevQuestions[questionIndex].selectedAnswer = answerIndex
+		setQuestions(prevQuestions)
 	}
 
 	useEffect(() => {
@@ -40,9 +48,19 @@ export default function Game() {
 		getQuestions()
 	}, [])
 
+	const questionComponents = questions.map((item, index) =>
+		<Question
+			key={index}
+			question={item.question}
+			category={item.category}
+			answers={item.answers}
+			updateSelectedAnswer={answerIndex => updateSelectedAnswer(index, answerIndex)}
+		/>
+	)
+
 	return (
 		<div>
-			{JSON.stringify(questions)}
+			{questionComponents}
 		</div>
 	)
 }
