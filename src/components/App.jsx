@@ -1,5 +1,11 @@
+import Welcome from "./Welcome"
+import Game from "./Game"
+
 export default function App() {
 	return (
-		<h1>Hi, Mom</h1>
+		<div>
+			<Welcome />
+			<Game />
+		</div>
 	)
 }
