@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import he from "he"
 import Question from "./Question"
 import endpoint from "/endpoint"
@@ -23,7 +23,7 @@ export default function Game() {
 		})
 	}
 
-	async function getQuestions() {
+	const getQuestions = useCallback(async() => {
 		const res = await fetch(endpoint)
 
 		if (!res.ok) {
@@ -38,12 +38,11 @@ export default function Game() {
 		} else {
 			console.error("Non-zero response-object code")
 		}
-
-	}
+	}, [])
 
 	useEffect(() => {
 		getQuestions()
-	}, [])
+	}, [getQuestions])
 
 	function updateSelectedAnswer(questionIndex, answerIndex) {
 		const prevQuestions = [...questions]
