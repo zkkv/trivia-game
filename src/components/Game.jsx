@@ -22,7 +22,13 @@ export default function Game() {
 	useEffect(() => {
 		async function getQuestions() {
 			const res = await fetch(endpoint)
+
+			if (!res.ok) {
+				console.error("API error")
+			}
+
 			const data = await res.json()
+
 			if (data.response_code === 0) {
 				setQuestions(parseData(data))
 			} else {
