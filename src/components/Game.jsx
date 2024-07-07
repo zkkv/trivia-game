@@ -24,7 +24,8 @@ export default function Game() {
 			const res = await fetch(endpoint)
 
 			if (!res.ok) {
-				console.error("API error")
+				console.error(`Response code: ${res.status}`)
+				return;
 			}
 
 			const data = await res.json()
@@ -32,7 +33,7 @@ export default function Game() {
 			if (data.response_code === 0) {
 				setQuestions(parseData(data))
 			} else {
-				console.error("API Error")
+				console.error("Non-zero response-object code")
 			}
 
 		}
