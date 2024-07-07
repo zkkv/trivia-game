@@ -5,13 +5,9 @@ import Game from "./Game"
 export default function App() {
 	const [hasStarted, setHasStarted] = useState(false)
 
-	function startGame() {
-		setHasStarted(true)
-	}
-
 	return (
 		<div>
-			{hasStarted ? <Game /> : <Welcome startGame={startGame}/>}
+			{hasStarted ? <Game /> : <Welcome setHasStarted={setHasStarted} />}
 		</div>
 	)
 }
