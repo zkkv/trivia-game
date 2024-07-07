@@ -4,6 +4,7 @@ import endpoint from "/endpoint"
 
 export default function Game() {
 	const [questions, setQuestions] = useState([])
+	const [gameState, setGameState] = useState("playing")
 
 	function parseData(data) {
 		return data.results.map(q => {
@@ -16,37 +17,46 @@ export default function Game() {
 				question: q.question,
 				answers: answers,
 				correctAnswerIndex: randomIndex,
-				selectedAnswer: null
+				selectedAnswerIndex: null
 			}
 		})
 	}
 
-	function updateSelectedAnswer(questionIndex, answerIndex) {
-		const prevQuestions = [...questions]
-		prevQuestions[questionIndex].selectedAnswer = answerIndex
-		setQuestions(prevQuestions)
+	async function getQuestions() {
+		const res = await fetch(endpoint)
+
+		if (!res.ok) {
+			console.error(`Response code: ${res.status}`)
+			return;
+		}
+
+		const data = await res.json()
+
+		if (data.response_code === 0) {
+			setQuestions(parseData(data))
+		} else {
+			console.error("Non-zero response-object code")
+		}
+
 	}
 
 	useEffect(() => {
-		async function getQuestions() {
-			const res = await fetch(endpoint)
-
-			if (!res.ok) {
-				console.error(`Response code: ${res.status}`)
-				return;
-			}
-
-			const data = await res.json()
-
-			if (data.response_code === 0) {
-				setQuestions(parseData(data))
-			} else {
-				console.error("Non-zero response-object code")
-			}
-
-		}
 		getQuestions()
 	}, [])
+
+	function updateSelectedAnswer(questionIndex, answerIndex) {
+		const prevQuestions = [...questions]
+		prevQuestions[questionIndex].selectedAnswerIndex = answerIndex
+		setQuestions(prevQuestions)
+	}
+
+	function checkAnswers() {
+		if (questions.every(q => q.selectedAnswerIndex === q.correctAnswerIndex)) {
+			setGameState("win")
+		} else {
+			setGameState("loss")
+		}
+	}
 
 	const questionComponents = questions.map((item, index) =>
 		<Question
@@ -58,9 +68,15 @@ export default function Game() {
 		/>
 	)
 
+	const areAllAnswered = questions.every(q => q.selectedAnswerIndex !== null)
+
 	return (
 		<div>
 			{questionComponents}
+			<button onClick={checkAnswers} disabled={!areAllAnswered}>Check answers</button>
+			{gameState === "win" && <p>You won</p>}
+			{gameState === "loss" && <p>You lost</p>}
+			{gameState !== "playing" && <button onClick={getQuestions}>Play again</button>}
 		</div>
 	)
 }
