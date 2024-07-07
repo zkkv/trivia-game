@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import he from "he"
 import Question from "./Question"
 import endpoint from "/endpoint"
 
@@ -13,9 +14,9 @@ export default function Game() {
 			const answers = [...q.incorrect_answers]
 			answers.splice(randomIndex, 0, q.correct_answer)
 			return {
-				category: q.category,
-				question: q.question,
-				answers: answers,
+				category: he.decode(q.category),
+				question: he.decode(q.question),
+				answers: answers.map(text => he.decode(text)),
 				correctAnswerIndex: randomIndex,
 				selectedAnswerIndex: null
 			}
