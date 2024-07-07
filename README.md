@@ -1,1 +1,1 @@
-# Scrimba Trivia Game
+# Trivia Game
