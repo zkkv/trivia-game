@@ -72,7 +72,7 @@ export default function Game() {
 
 	const areAllAnswered = questions.every(q => q.selectedAnswerIndex !== null)
 	const nCorrect = questions.filter(q => q.selectedAnswerIndex === q.correctAnswerIndex).length
-	const hasWon = nCorrect === questions.length && nCorrect > 0
+	const hasWon = nCorrect === questions.length && nCorrect > 0 && gameState === "finished"
 	const containerRef = useRef(null)
 
 
