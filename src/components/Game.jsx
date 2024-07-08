@@ -43,7 +43,7 @@ export default function Game() {
 
 	const startGame = useCallback(() => {
 		fetchQuestions()
-		setIsPlaying(true) // TODO: set to true
+		setIsPlaying(true)
 	}, [fetchQuestions])
 
 	useEffect(() => {
@@ -72,6 +72,7 @@ export default function Game() {
 
 	return (
 		<div ref={containerRef} className="top-level-container">
+			<h1>Here&apos;s {questions.length} questions for ya!</h1>
 			<div className="questions-container">
 				{questionComponents}
 			</div>
