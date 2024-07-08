@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
+import Confetti from "react-confetti"
 import he from "he"
 import Question from "./Question"
 import endpoint from "/endpoint"
@@ -42,7 +43,7 @@ export default function Game() {
 
 	const startGame = useCallback(() => {
 		fetchQuestions()
-		setIsPlaying(true)
+		setIsPlaying(true) // TODO: set to true
 	}, [fetchQuestions])
 
 	useEffect(() => {
@@ -58,24 +59,41 @@ export default function Game() {
 	const questionComponents = questions.map((item, index) =>
 		<Question
 			key={index}
-			question={item.question}
-			category={item.category}
-			answers={item.answers}
+			{...item}
 			updateSelectedAnswer={answerIndex => updateSelectedAnswer(index, answerIndex)}
+			isPlaying={isPlaying}
 		/>
 	)
 
 	const areAllAnswered = questions.every(q => q.selectedAnswerIndex !== null)
 	const nCorrect = questions.filter(q => q.selectedAnswerIndex === q.correctAnswerIndex).length
+	const hasWon = nCorrect === questions.length && nCorrect > 0
+	const containerRef = useRef(null)
 
-	return (	
-		<div>
-			{questionComponents}
-			<button onClick={() => setIsPlaying(false)} disabled={!areAllAnswered}>Check answers</button>
-			{!isPlaying && <div>
-				<p>You scored {nCorrect}/{questions.length} correct answers</p>
-				<button onClick={startGame}>Play again</button>
-			</div>}
+	return (
+		<div ref={containerRef} className="top-level-container">
+			<div className="questions-container">
+				{questionComponents}
+			</div>
+			{isPlaying
+				? <div className="bottom-controls">
+					<button
+						className="main-button"
+						onClick={() => setIsPlaying(false)}
+						disabled={!areAllAnswered}>Check answers
+					</button>
+				</div>
+				: <div className="bottom-controls">
+					<p className="results">You scored {nCorrect}/{questions.length} correct answers</p>
+					<button className="main-button" onClick={startGame}>Play again</button>
+				</div>}
+			{hasWon &&
+				<Confetti
+					recycle={false}
+					width={containerRef.current.clientWidth}
+					height={containerRef.current.clientHeight}
+					gravity={0.3}
+				/>}
 		</div>
 	)
 }

@@ -6,8 +6,8 @@ export default function App() {
 	const [hasStarted, setHasStarted] = useState(false)
 
 	return (
-		<div>
+		<>
 			{hasStarted ? <Game /> : <Welcome setHasStarted={setHasStarted} />}
-		</div>
+		</>
 	)
 }
