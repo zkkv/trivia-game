@@ -61,15 +61,21 @@ button:disabled {
 .main-button {
 	background-color: var(--main-button-bg-color);
 	color: var(--bg-color);
-	border: none;
+	border-color: transparent;
+	border-style: solid;
+	border-radius: 1.125rem;
+	border-width: 5px;
 	padding: 1rem 3rem;
-	border-radius: 1rem;
 	font-size: 1.25rem;
 	font-weight: 500;
 }
 
 .main-button:disabled {
 	opacity: 0.25;
+}
+
+.main-button:active {
+	box-shadow: inset 3px 3px 10px var(--text-color);
 }
 
 .questions-container {
