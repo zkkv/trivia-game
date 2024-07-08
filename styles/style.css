@@ -42,6 +42,12 @@ button:disabled {
 	min-height: 100vh;
 }
 
+.top-level-container > h1 {
+	font-size: 2.125rem;
+	color: var(--text-color);
+	text-align: center;
+}
+
 .welcome > h1 {
 	font-size: 3rem;
 	color: var(--text-color);
@@ -86,12 +92,6 @@ button:disabled {
 .question {
 	margin-top: 1rem;
 	margin-bottom: 1rem;
-}
-
-.top-level-container > h1 {
-	font-size: 2.125rem;
-	color: var(--text-color);
-	text-align: center;
 }
 
 .question > h2 {
