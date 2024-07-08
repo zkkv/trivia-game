@@ -57,12 +57,15 @@ export default function Game() {
 	}
 
 	const questionComponents = questions.map((item, index) =>
-		<Question
-			key={index}
-			{...item}
-			updateSelectedAnswer={answerIndex => updateSelectedAnswer(index, answerIndex)}
-			isPlaying={isPlaying}
-		/>
+		<>
+			<Question
+				key={index}
+				{...item}
+				updateSelectedAnswer={answerIndex => updateSelectedAnswer(index, answerIndex)}
+				isPlaying={isPlaying}
+			/>
+			<hr className="divider"></hr>
+		</>
 	)
 
 	const areAllAnswered = questions.every(q => q.selectedAnswerIndex !== null)
